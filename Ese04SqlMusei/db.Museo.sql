@@ -1,5 +1,0 @@
-﻿CREATE TABLE Museo
-(
-	NomeM VARCHAR(20) PRIMARY KEY,
-    Citta VARCHAR(20) NOT NULL
-)
