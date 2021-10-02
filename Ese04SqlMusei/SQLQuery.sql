@@ -20,41 +20,49 @@ AND NOT EXISTS (SELECT *
 SELECT m.NomeMuseo
 FROM Museo m
 WHERE m.Citta = 'Londra'
-AND EXISTS (SELECT *
-			FROM Opera o
-			WHERE o.NomeArtista = 'Tiziano'
-			AND o.NomeMuseo = m.NomeMuseo)
+AND NOT EXISTS (SELECT *
+				FROM Opera o
+				WHERE o.NomeArtista <> 'Tiziano'
+				AND o.NomeMuseo = m.NomeMuseo)
 
 /* */
 
 SELECT m.NomeMuseo
 FROM Museo m
 WHERE m.Citta = 'Londra' AND Not Exists
-( SELECT *
-FROM Opera o
-WHERE o.NomeArtista = 'Tiziano' AND m.NomeMuseo = o.NomeMuseo)
+		( SELECT *
+		FROM Opera o
+		WHERE o.NomeArtista = 'Tiziano'
+		AND m.NomeMuseo = o.NomeMuseo)
 
 /* Per ciascun artista, il nome dell’artista ed il numero di sue opere conservate alla
 “Galleria degli Uffizi”*/
 
-SELECT o.NomeArtista, COUNT(*) AS NumeroOpere
+SELECT o.NomeArtista, COUNT(*) AS NOpere
 FROM Opera o
-WHERE o.NomeMuseo = 'Galleria degli Uffizi'
+WHERE o.NomeMuseo = 'Uffizi'
 GROUP BY o.NomeArtista
 
-/* I musei che conservano almeno 20 opere di artisti italiani*/
+/* I musei che conservano almeno TOT opere di artisti italiani*/
 
-SELECT o.NomeMuseo
+SELECT o.NomeMuseo, COUNT(*) as n
 FROM Opera o, Artista a
-WHERE a.Nazionalità = 'IT' AND o.NomeArtista = a.NomeArtista
+WHERE a.Nazionalita = 'IT' AND o.NomeArtista = a.NomeArtista
 GROUP BY o.NomeMuseo
-HAVING Count (*) >=20
+HAVING Count (*) = 1 /*ritorna il record se ho almeno quello indicato*/
 
 /*Il titolo dell’opera ed il nome dell’artista delle opere di artisti italiani che non hanno personaggi*/
 
 SELECT o.Titolo, a.NomeArtista
 FROM Opera o, Artista a
-WHERE a.Nazionalità = 'IT' AND o.NomeArtista=a.NomeArtista AND
-Not Exists ( SELECT *
-FROM Personaggio p
-WHERE p.Codice=o.Codice)
+WHERE a.Nazionalita = 'IT' 
+AND o.NomeArtista=a.NomeArtista
+AND NOT EXISTS (SELECT *
+				FROM Personaggio p
+				WHERE p.Codice=o.Codice)
+
+/*UPDATE*/
+
+UPDATE Artista
+SET Nazionalita='ES'
+WHERE NomeArtista='Picasso'
