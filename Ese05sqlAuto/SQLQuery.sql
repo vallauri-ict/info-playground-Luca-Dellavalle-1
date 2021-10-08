@@ -62,18 +62,47 @@ INSERT INTO AutoCoinvolte VALUES
 
 /*UPDATE*/
 
-UPDATE AutoCoinvolte
-SET ImportoDelDanno=10
-WHERE CodS='cs1';
+UPDATE _Auto
+SET Potenza=130
+WHERE CodF='cf2';
+
+UPDATE Assicurazioni
+SET Nome='Sara'
+WHERE CodAss='ca2' AND CodAss='ca3'
 
 UPDATE _Auto
-SET Marca='Maserati'
-WHERE CodF='cf3'
+SET Cilindrata=2000
+WHERE CodF='cf1'
 
 UPDATE Sinistro
-SET Localita='Bra'
-WHERE CodS='cs1'
+SET DataS='20020120'
+WHERE CodS='cs3'
 
 /*QUERY*/
 
-/*1*/
+/*1. Targa e Marca delle Auto di cilindrata superiore a 2000 cc o di potenza superiore a 120 CV*/
+SELECT _Auto.Targa, _Auto.Marca
+FROM _Auto
+WHERE Cilindrata = 2000 OR Potenza > 120
+
+/*2. Nome del proprietario e Targa delle Auto di cilindrata superiore a 2000 cc oppure di potenza
+superiore a 120 CV*/
+SELECT p.Nome, a.Targa
+FROM _Auto a, Proprietari p
+WHERE a.CodF=p.CodF 
+AND (Cilindrata = 2000 OR Potenza > 120)
+
+/*3. Targa e Nome del proprietario delle Auto di cilindrata superiore a 2000 cc oppure di potenza
+superiore a 120 CV, assicurate presso la “SARA”*/
+SELECT p.Nome, a.Targa
+FROM _Auto a, Proprietari p, Assicurazioni ass
+WHERE a.CodF=p.CodF 
+AND (Cilindrata = 2000 OR Potenza > 120) 
+AND a.CodAss=ass.CodAss
+AND ass.Nome='Sara'
+
+/*4. Targa e Nome del proprietario delle Auto assicurate presso la “SARA” e coinvolte in sinistri il
+20/01/02*/
+
+
+
