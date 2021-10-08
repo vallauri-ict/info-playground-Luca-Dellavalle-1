@@ -1,19 +1,19 @@
-﻿DROP TABLE AutoCoinvolte,_Auto, Sinistro, Assicurazioni, Proprietari;
+﻿DROP TABLE AutoCoinvolte, _Auto, Sinistro, Assicurazioni, Proprietari;
 
 CREATE TABLE Proprietari(
-	CodF int PRIMARY KEY IDENTITY,
+	CodF varchar(10) PRIMARY KEY ,
 	Nome varchar(50) NOT NULL,
 	Residenza varchar(40) NOT NULL
 )
 
 CREATE TABLE Assicurazioni(
-	CodAss int PRIMARY KEY IDENTITY,
+	CodAss varchar(10) PRIMARY KEY ,
 	Nome varchar(30) NOT NULL,
 	Sede varchar(40) NOT NULL
 )
 
 CREATE TABLE Sinistro(
-	CodS int PRIMARY KEY IDENTITY,
+	CodS varchar(10) PRIMARY KEY ,
 	Localita varchar(40) NOT NULL,
 	DataS DATETIME NULL
 )
@@ -23,12 +23,12 @@ CREATE TABLE _Auto(
 	Marca varchar(30) NOT NULL,
 	Cilindrata int NOT NULL ,
 	Potenza int NOT NULL,
-	CodF int FOREIGN KEY REFERENCES  Proprietari(CodF),
-	CodAss int FOREIGN KEY REFERENCES Assicurazioni(CodAss)
+	CodF varchar(10) FOREIGN KEY REFERENCES  Proprietari(CodF),
+	CodAss varchar(10) FOREIGN KEY REFERENCES Assicurazioni(CodAss)
 )
 
 CREATE TABLE AutoCoinvolte(
-	CodS int FOREIGN KEY REFERENCES Sinistro(CodS),
+	CodS varchar(10) FOREIGN KEY REFERENCES Sinistro(CodS),
 	Targa varchar(20) FOREIGN KEY REFERENCES _Auto(Targa),
 	ImportoDelDanno int NOT NULL
 )
@@ -36,26 +36,44 @@ CREATE TABLE AutoCoinvolte(
 /*INSERT*/
 
 INSERT INTO Proprietari VALUES
-('Mario','Savona'),
-('Sergio','Bra'),
-('Sofia','Cuneo');
+('cf1','Mario','Savona'),
+('cf2','Sergio','Bra'),
+('cf3','Sofia','Cuneo');
 
 INSERT INTO Assicurazioni VALUES
-('Vittoria','Roma'),
-('Cattolica','Torino'),
-('Unicredit','Milano');
+('ca1','Vittoria','Roma'),
+('ca2','Cattolica','Torino'),
+('ca3','Unicredit','Milano');
 
 INSERT INTO Sinistro VALUES
-('Alba','20032021'),
-('Monchiero','21052021'),
-('Dogliani','05032021');
+('cs1','Alba','20210322'),
+('cs2','Monchiero','20210521'),
+('cs3','Dogliani','20200910');
 
 INSERT INTO _Auto VALUES
-('AB990FD','Mercedes',100,50),
-('ER345TR','Audi',200,60),
-('RT432FR','BMW',300,70);
+('AB990FD','Mercedes',100,50,'cf1','ca1'),
+('ER345TR','Audi',200,60,'cf2','ca2'),
+('RT432FR','BMW',300,70,'cf3','ca3');
 
 INSERT INTO AutoCoinvolte VALUES
-(10000),
-(20000),
-(1000);
+('cs1','AB990FD',10000),
+('cs2','ER345TR',20000),
+('cs3','RT432FR',1000);
+
+/*UPDATE*/
+
+UPDATE AutoCoinvolte
+SET ImportoDelDanno=10
+WHERE CodS='cs1';
+
+UPDATE _Auto
+SET Marca='Maserati'
+WHERE CodF='cf3'
+
+UPDATE Sinistro
+SET Localita='Bra'
+WHERE CodS='cs1'
+
+/*QUERY*/
+
+/*1*/
