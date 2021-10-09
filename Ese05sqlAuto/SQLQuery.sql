@@ -41,7 +41,7 @@ INSERT INTO Proprietari VALUES
 ('cf3','Sofia','Cuneo');
 
 INSERT INTO Assicurazioni VALUES
-('ca1','Vittoria','Roma'),
+('ca1','Sara','Roma'),
 ('ca2','Cattolica','Torino'),
 ('ca3','Unicredit','Milano');
 
@@ -66,10 +66,6 @@ UPDATE _Auto
 SET Potenza=130
 WHERE CodF='cf2';
 
-UPDATE Assicurazioni
-SET Nome='Sara'
-WHERE CodAss='ca2' AND CodAss='ca3'
-
 UPDATE _Auto
 SET Cilindrata=2000
 WHERE CodF='cf1'
@@ -77,6 +73,15 @@ WHERE CodF='cf1'
 UPDATE Sinistro
 SET DataS='20020120'
 WHERE CodS='cs3'
+
+UPDATE Sinistro
+SET DataS='20020120'
+WHERE CodS='cs2'
+
+UPDATE _Auto
+SET Marca='Fiat'
+WHERE Targa='RT432FR'
+
 
 /*QUERY*/
 
@@ -96,13 +101,42 @@ AND (Cilindrata = 2000 OR Potenza > 120)
 superiore a 120 CV, assicurate presso la “SARA”*/
 SELECT p.Nome, a.Targa
 FROM _Auto a, Proprietari p, Assicurazioni ass
-WHERE a.CodF=p.CodF 
-AND (Cilindrata = 2000 OR Potenza > 120) 
-AND a.CodAss=ass.CodAss
+WHERE (a.Cilindrata = 2000 OR a.Potenza > 120)
 AND ass.Nome='Sara'
+AND a.CodF=p.CodF
+AND a.CodAss=ass.CodAss
 
 /*4. Targa e Nome del proprietario delle Auto assicurate presso la “SARA” e coinvolte in sinistri il
 20/01/02*/
+SELECT a.Targa, p.Nome
+FROM _Auto a, Assicurazioni ass, Proprietari p, AutoCoinvolte ac, Sinistro s
+WHERE ac.Targa = a.Targa
+AND ass.Nome='Sara'
+AND p.CodF = a.CodF
+AND s.CodS=ac.CodS
+AND s.Datas='20020120'
+
+/*5. Per ciascuna Assicurazione, il nome, la sede ed il numero di auto assicurate*/
+SELECT ass.Nome, ass.Sede, COUNT(*) AS nAutoAssicurate
+FROM Assicurazioni ass, _Auto a
+WHERE a.CodAss=ass.CodAss
+GROUP BY ass.Nome, ass.Sede, ass.Sede
+
+/*6. Per ciascuna auto “Fiat”, la targa dell’auto ed il numero di sinistri in cui è stata coinvolta*/
+SELECT a.Targa, COUNT(*) AS nSinistri
+FROM _Auto a, AutoCoinvolte ac
+WHERE a.Marca='Fiat' AND a.Targa = ac.Targa 
+GROUP BY a.Targa
+
+/*7. Per ciascuna auto coinvolta in più di un sinistro, la targa dell’auto, il nome dell’ Assicurazione
+ed il totale dei danni riportati*/
+SELECT a.Targa,ass.Nome, sum(ac.ImportoDelDanno)
+FROM AutoCoinvolte ac,_Auto a,Assicurazioni ass
+WHERE a.Targa=ac.Targa AND a.CodAss=ass.CodAss
+GROUP BY a.Targa, ass.Nome
+HAVING COUNT(*) > 1
+
+
 
 
 
