@@ -18,7 +18,7 @@ namespace Ese11StoredProcedureStudenti
             InitializeComponent();
         }
 
-        static readonly string CONNECTION_STRING = @"Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=\'C:\\Users\\Luca Dellavalle\\Documents\\GitHub\\info-playground-Luca-Dellavalle-1\\Ese11StoredProcedureStudenti\\Scuola.mdf\';Integrated Security = True; Connect Timeout = 30"; 
+        static readonly string CONNECTION_STRING = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=\'C:\\Users\\Luca Dellavalle\\Documents\\GitHub\\info-playground-Luca-Dellavalle-1\\Ese11StoredProcedureStudenti\\Scuola.mdf\';Integrated Security = True; Connect Timeout = 30"; 
 
         private void btnElencoStudenti_Click(object sender, EventArgs e)
         {
@@ -29,31 +29,30 @@ namespace Ese11StoredProcedureStudenti
                 con.Open();
                 using (SqlCommand cmd = new SqlCommand(sql, con))
                 {
-                    SqlParameter nomeBanca = new SqlParameter();
-                    nomeBanca.Value = txtClasse.Text;
-                    nomeBanca.ParameterName = "nomeBanca";
-                    nomeBanca.Direction = ParameterDirection.Input;
-                    nomeBanca.DbType = DbType.String;
-                    nomeBanca.Size = 50;
-                    cmd.Parameters.Add(nomeBanca);
+                    SqlParameter InputClasse = new SqlParameter();
+                    InputClasse.Value = txtClasse.Text;
+                    InputClasse.ParameterName = "InputClasse";
+                    InputClasse.Direction = ParameterDirection.Input;
+                    InputClasse.DbType = DbType.String;
+                    InputClasse.Size = 50;
+                    cmd.Parameters.Add(InputClasse);
 
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     SqlDataReader ris = cmd.ExecuteReader();
-
+                    string s = "";
                     while (ris.Read())
                     {
-                        string s = "";
                         for (int i = 0; i < ris.FieldCount; i++)
                         {
                             s += ris.GetValue(i) + " - ";
                         }
-                        MessageBox.Show(s, "Risultato stored");
+                        s += "\n";
+                        
                     }
 
+                    MessageBox.Show(s, "Risultato stored");
                     ris.Close();
-
-                    MessageBox.Show("");
 
                 }
             }
